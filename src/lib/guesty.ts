@@ -1,0 +1,81 @@
+const BASE_URL = process.env.GUESTY_BASE_URL!
+
+let tokenCache: { token: string; expiresAt: number } | null = null
+
+async function getToken(): Promise<string> {
+  if (tokenCache && Date.now() < tokenCache.expiresAt) {
+    return tokenCache.token
+  }
+
+  const res = await fetch('https://open-api.guesty.com/oauth2/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      scope: 'open-api',
+      client_id: process.env.GUESTY_CLIENT_ID!,
+      client_secret: process.env.GUESTY_CLIENT_SECRET!,
+    }),
+  })
+
+  if (!res.ok) throw new Error(`Guesty auth failed: ${res.status}`)
+
+  const data = await res.json() as { access_token: string; expires_in: number }
+  tokenCache = {
+    token: data.access_token,
+    expiresAt: Date.now() + (data.expires_in - 60) * 1000,
+  }
+  return tokenCache.token
+}
+
+async function guestyFetch(path: string, options: RequestInit = {}) {
+  const token = await getToken()
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`Guesty ${options.method ?? 'GET'} ${path} failed (${res.status}): ${body}`)
+  }
+  return res.json()
+}
+
+export type GuestyPropertyPayload = {
+  nickname: string
+  address: {
+    full: string
+    city: string
+    country: string
+    zipcode: string
+  }
+  propertyType: string
+  bedrooms: number
+  bathrooms: number
+  prices: { basePrice: number }
+  pictures: { original: string }[]
+  publicDescription: { summary: string }
+}
+
+export async function createProperty(payload: GuestyPropertyPayload) {
+  return guestyFetch('/listings', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }) as Promise<{ _id: string }>
+}
+
+export async function getPropertyInsights(guestyId: string) {
+  return guestyFetch(`/listings/${guestyId}/stats`) as Promise<{
+    revenue: number
+    occupancyRate: number
+    avgDailyRate: number
+  }>
+}
+
+export async function getCalendar(guestyId: string, from: string, to: string) {
+  return guestyFetch(`/availability-pricing/api/v3/listings/${guestyId}?startDate=${from}&endDate=${to}`)
+}

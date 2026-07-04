@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  CLEANER
+  ADMIN
+}
+
+enum PropertyStatus {
+  PENDING   // submitted, not yet pushed to Guesty
+  ACTIVE    // live in Guesty
+  INACTIVE
+}
+
+enum SmsStatus {
+  SENT
+  CONFIRMED
+  DECLINED
+  NO_RESPONSE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  phone        String?
+  role         Role     @default(CUSTOMER)
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  properties     Property[]
+  cleanerProfile CleanerProfile?
+}
+
+model Property {
+  id           String         @id @default(cuid())
+  ownerId      String
+  owner        User           @relation(fields: [ownerId], references: [id])
+  guestyId     String?        // set after successfully pushed to Guesty
+  name         String
+  address      String
+  postcode     String
+  type         String         // house, flat, cottage, lodge, etc.
+  bedrooms     Int
+  bathrooms    Int
+  expectedRate Decimal        @db.Decimal(10, 2)
+  description  String?
+  photos       String[]       // uploaded photo URLs
+  status       PropertyStatus @default(PENDING)
+  createdAt    DateTime       @default(now())
+}
+
+model CleanerProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  phone         String
+  coverageAreas String[] // postcode prefixes or area names e.g. ["LS1", "LS2", "Bradford"]
+  bio           String?
+  createdAt     DateTime @default(now())
+
+  availability CleanerAvailability[]
+  smsLogs      SmsLog[]
+}
+
+model CleanerAvailability {
+  id        String         @id @default(cuid())
+  cleanerId String
+  cleaner   CleanerProfile @relation(fields: [cleanerId], references: [id])
+  date      DateTime       @db.Date
+  available Boolean        @default(true)
+
+  @@unique([cleanerId, date])
+}
+
+model SmsLog {
+  id          String         @id @default(cuid())
+  cleanerId   String
+  cleaner     CleanerProfile @relation(fields: [cleanerId], references: [id])
+  bookingRef  String         // Guesty booking ID
+  propertyId  String
+  message     String
+  status      SmsStatus      @default(SENT)
+  sentAt      DateTime       @default(now())
+  respondedAt DateTime?
+}
