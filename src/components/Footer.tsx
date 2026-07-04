@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
@@ -7,7 +8,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Col 1 — Brand */}
           <div>
-            <p className="text-xl font-bold text-white mb-3">Prestolet</p>
+            <div className="mb-3">
+              <Image src="/logo.png" alt="Prestolet" width={160} height={45} className="object-contain brightness-0 invert" />
+            </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               Effortless short-stay lettings management. We handle everything so you can focus on what matters.
             </p>
