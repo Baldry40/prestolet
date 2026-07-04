@@ -66,7 +66,7 @@ export function Logo({ inverted = false, size = 'md', className = '' }: LogoProp
       {/* ── Wordmark ── */}
       <div className="select-none">
         <div className={`font-black tracking-tight leading-none ${titleSize} ${titleColor}`}>
-          PROTOLET
+          PRESTOLET
         </div>
         <div className={`font-semibold tracking-[0.18em] uppercase leading-none mt-1 hidden sm:block ${subSize} ${subColor}`}>
           Property Management

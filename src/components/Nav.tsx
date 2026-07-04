@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
-import { Logo } from '@/components/Logo'
 
 export default function Nav() {
   const { data: session } = useSession()
@@ -16,12 +16,12 @@ export default function Nav() {
   }, [])
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[9999] bg-white/90 backdrop-blur-sm border-b border-gray-100 transition-shadow duration-300 ${scrolled ? 'shadow-md' : 'shadow-none'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-[9999] bg-white border-b border-gray-100 transition-shadow duration-300 ${scrolled ? 'shadow-md' : 'shadow-none'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <Logo size="sm" />
+            <Image src="/logo.png" alt="Prestolet" width={150} height={42} className="object-contain" priority />
           </Link>
 
           {/* Desktop nav links */}
