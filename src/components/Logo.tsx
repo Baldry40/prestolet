@@ -7,68 +7,113 @@ type LogoProps = {
 }
 
 export function Logo({ inverted = false, size = 'md', className = '' }: LogoProps) {
-  const fill = inverted ? '#ffffff' : '#111111'
-  const lineFill = inverted ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.55)'
-  const subtleLineFill = inverted ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)'
-  const cubeSize = size === 'sm' ? 34 : size === 'lg' ? 54 : 44
-  const titleSize = size === 'sm' ? 'text-[17px]' : size === 'lg' ? 'text-2xl' : 'text-[21px]'
-  const subSize = size === 'sm' ? 'text-[7px]' : 'text-[8.5px]'
-  const titleColor = inverted ? 'text-white' : 'text-gray-950'
-  const subColor = inverted ? 'text-white/50' : 'text-gray-400'
+  const id = `logo-${inverted ? 'inv' : 'def'}-${size}`
+  const textColor = inverted ? '#ffffff' : '#111111'
+  const subColor = inverted ? 'rgba(255,255,255,0.55)' : '#888888'
+  const cubeSize = size === 'sm' ? 36 : size === 'lg' ? 56 : 46
+  const titleClass = size === 'sm' ? 'text-[18px]' : size === 'lg' ? 'text-[28px]' : 'text-[22px]'
+  const subClass = size === 'sm' ? 'text-[8px]' : size === 'lg' ? 'text-[11px]' : 'text-[9px]'
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {/* ── Cube icon ── */}
+      {/* ── 3-D isometric cube ── */}
       <svg
         width={cubeSize}
         height={cubeSize}
-        viewBox="0 0 100 100"
+        viewBox="0 0 80 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
       >
-        {/* Outer hexagon body */}
+        <defs>
+          {/* Top face — medium dark */}
+          <linearGradient id={`${id}-top`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stopColor={inverted ? '#555' : '#3a3a3a'} />
+            <stop offset="100%" stopColor={inverted ? '#333' : '#1e1e1e'} />
+          </linearGradient>
+          {/* Left face — darker */}
+          <linearGradient id={`${id}-left`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor={inverted ? '#222' : '#111111'} />
+            <stop offset="100%" stopColor={inverted ? '#2a2a2a' : '#1a1a1a'} />
+          </linearGradient>
+          {/* Right face — darkest */}
+          <linearGradient id={`${id}-right`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor={inverted ? '#1a1a1a' : '#0a0a0a'} />
+            <stop offset="100%" stopColor={inverted ? '#111' : '#050505'} />
+          </linearGradient>
+          {/* Inner hollow top */}
+          <linearGradient id={`${id}-inner`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stopColor={inverted ? '#777' : '#505050'} />
+            <stop offset="100%" stopColor={inverted ? '#555' : '#303030'} />
+          </linearGradient>
+        </defs>
+
+        {/*
+          Hex points (isometric cube):
+          Top        = (40, 4)
+          TopRight   = (72, 22)
+          BotRight   = (72, 58)
+          Bottom     = (40, 76)
+          BotLeft    = (8,  58)
+          TopLeft    = (8,  22)
+          Center     = (40, 40)
+        */}
+
+        {/* ── Top face ── */}
         <polygon
-          points="50,4 89,26 89,74 50,96 11,74 11,26"
-          fill={fill}
+          points="40,4 72,22 40,40 8,22"
+          fill={`url(#${id}-top)`}
+        />
+        {/* ── Left face ── */}
+        <polygon
+          points="8,22 40,40 40,76 8,58"
+          fill={`url(#${id}-left)`}
+        />
+        {/* ── Right face ── */}
+        <polygon
+          points="72,22 72,58 40,76 40,40"
+          fill={`url(#${id}-right)`}
         />
 
-        {/* Top face tint */}
+        {/* ── Inner hollow on top face ── */}
         <polygon
-          points="50,4 89,26 50,50 11,26"
-          fill={inverted ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.18)'}
-        />
-        {/* Left face tint */}
-        <polygon
-          points="11,26 50,50 50,96 11,74"
-          fill={inverted ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.22)'}
+          points="40,14 62,26 40,38 18,26"
+          fill={`url(#${id}-inner)`}
+          opacity="0.7"
         />
 
-        {/* Primary structural lines */}
-        <line x1="50" y1="4"  x2="50" y2="96" stroke={lineFill} strokeWidth="3"   strokeLinecap="round"/>
-        <line x1="11" y1="26" x2="89" y2="74" stroke={lineFill} strokeWidth="2.5" strokeLinecap="round"/>
-        <line x1="89" y1="26" x2="11" y2="74" stroke={lineFill} strokeWidth="2.5" strokeLinecap="round"/>
+        {/* ── White separation lines ── */}
+        {/* Outer edges */}
+        <polyline points="40,4 72,22 72,58 40,76 8,58 8,22 40,4"
+          stroke={inverted ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.7)'}
+          strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
+        {/* Center dividers */}
+        <line x1="40" y1="4"  x2="40" y2="40" stroke={inverted ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.7)'} strokeWidth="1.5"/>
+        <line x1="8"  y1="22" x2="40" y2="40" stroke={inverted ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.6)'} strokeWidth="1.2"/>
+        <line x1="72" y1="22" x2="40" y2="40" stroke={inverted ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.6)'} strokeWidth="1.2"/>
+        {/* Lower dividers */}
+        <line x1="40" y1="40" x2="40" y2="76" stroke={inverted ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.5)'} strokeWidth="1.2"/>
+        <line x1="8"  y1="58" x2="40" y2="40" stroke={inverted ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.4)'} strokeWidth="1"/>
+        <line x1="72" y1="58" x2="40" y2="40" stroke={inverted ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.4)'} strokeWidth="1"/>
 
-        {/* Left-face internal geometry */}
-        <line x1="11" y1="50" x2="50" y2="27" stroke={subtleLineFill} strokeWidth="1.8"/>
-        <line x1="11" y1="50" x2="50" y2="73" stroke={subtleLineFill} strokeWidth="1.8"/>
-        <line x1="30" y1="38" x2="30" y2="85" stroke={subtleLineFill} strokeWidth="1.4"/>
-
-        {/* Right-face internal geometry */}
-        <line x1="89" y1="50" x2="50" y2="27" stroke={subtleLineFill} strokeWidth="1.8"/>
-        <line x1="89" y1="50" x2="50" y2="73" stroke={subtleLineFill} strokeWidth="1.8"/>
-        <line x1="70" y1="38" x2="70" y2="85" stroke={subtleLineFill} strokeWidth="1.4"/>
-
-        {/* Top-face internal geometry */}
-        <line x1="30" y1="38" x2="70" y2="15" stroke={subtleLineFill} strokeWidth="1.4"/>
-        <line x1="70" y1="38" x2="30" y2="15" stroke={subtleLineFill} strokeWidth="1.4"/>
+        {/* Inner hollow outline */}
+        <polyline points="40,14 62,26 40,38 18,26 40,14"
+          stroke={inverted ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.55)'}
+          strokeWidth="1" fill="none"/>
       </svg>
 
       {/* ── Wordmark ── */}
-      <div className="select-none">
-        <div className={`font-black tracking-tight leading-none ${titleSize} ${titleColor}`}>
+      <div className="select-none leading-none">
+        <div
+          className={`font-black tracking-tight leading-none ${titleClass}`}
+          style={{ color: textColor }}
+        >
           PRESTOLET
         </div>
-        <div className={`font-semibold tracking-[0.18em] uppercase leading-none mt-1 hidden sm:block ${subSize} ${subColor}`}>
+        <div
+          className={`font-semibold tracking-[0.2em] uppercase mt-1 hidden sm:block ${subClass}`}
+          style={{ color: subColor }}
+        >
           Property Management
         </div>
       </div>
