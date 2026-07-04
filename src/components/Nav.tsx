@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
+import { Logo } from '@/components/Logo'
 
 export default function Nav() {
   const { data: session } = useSession()
@@ -20,8 +20,8 @@ export default function Nav() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="Prestolet" width={160} height={45} className="object-contain mix-blend-multiply" />
+          <Link href="/">
+            <Logo size="sm" />
           </Link>
 
           {/* Desktop nav links */}

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import { Logo } from '@/components/Logo'
 
 export default function Footer() {
   return (
@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Col 1 — Brand */}
           <div>
             <div className="mb-3">
-              <Image src="/logo.png" alt="Prestolet" width={160} height={45} className="object-contain brightness-0 invert" />
+              <Logo size="sm" inverted />
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               Effortless short-stay lettings management. We handle everything so you can focus on what matters.
