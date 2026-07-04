@@ -21,7 +21,7 @@ export default function Nav() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="Prestolet" width={160} height={45} className="object-contain" />
+            <Image src="/logo.png" alt="Prestolet" width={160} height={45} className="object-contain mix-blend-multiply" />
           </Link>
 
           {/* Desktop nav links */}
