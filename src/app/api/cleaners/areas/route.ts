@@ -23,13 +23,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Cleaner profile not found.' }, { status: 404 })
   }
 
-  if (profile.coverageAreas.includes(area.trim())) {
+  const areas = (profile.coverageAreas as string[]) ?? []
+  if (areas.includes(area.trim())) {
     return NextResponse.json({ error: 'Area already added.' }, { status: 409 })
   }
 
   await db.cleanerProfile.update({
     where: { id: profile.id },
-    data: { coverageAreas: { push: area.trim() } },
+    data: { coverageAreas: [...areas, area.trim()] },
   })
 
   return NextResponse.json({ ok: true })
@@ -51,10 +52,11 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Cleaner profile not found.' }, { status: 404 })
   }
 
+  const areas = (profile.coverageAreas as string[]) ?? []
   await db.cleanerProfile.update({
     where: { id: profile.id },
     data: {
-      coverageAreas: profile.coverageAreas.filter((a) => a !== area.trim()),
+      coverageAreas: areas.filter((a) => a !== area.trim()),
     },
   })
 

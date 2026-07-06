@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -52,7 +52,7 @@ model Property {
   bathrooms    Int
   expectedRate Decimal        @db.Decimal(10, 2)
   description  String?
-  photos       String[]       // uploaded photo URLs
+  photos       Json           @default("[]")
   status       PropertyStatus @default(PENDING)
   createdAt    DateTime       @default(now())
 }
@@ -62,7 +62,7 @@ model CleanerProfile {
   userId        String   @unique
   user          User     @relation(fields: [userId], references: [id])
   phone         String
-  coverageAreas String[] // postcode prefixes or area names e.g. ["LS1", "LS2", "Bradford"]
+  coverageAreas Json     @default("[]")
   bio           String?
   createdAt     DateTime @default(now())
 

@@ -24,7 +24,7 @@ export default async function CleanerPortalPage() {
     ? {
         id: profile.id,
         phone: profile.phone,
-        coverageAreas: profile.coverageAreas,
+        coverageAreas: (profile.coverageAreas as string[]) ?? [],
         bio: profile.bio,
         availability: profile.availability.map((a) => ({
           id: a.id,
