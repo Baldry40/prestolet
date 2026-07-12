@@ -11,11 +11,6 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] } },
 }
 
-const fadeIn = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.8 } },
-}
-
 const staggerContainer = {
   hidden: {},
   show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
@@ -91,7 +86,6 @@ const services = [
     ),
     title: 'Multi-Channel Listings',
     copy: 'One submission, listed everywhere. We sync your calendar across all major platforms automatically.',
-    large: true,
   },
   {
     icon: (
@@ -101,7 +95,6 @@ const services = [
     ),
     title: 'Dynamic Pricing',
     copy: 'AI-powered pricing adjusts nightly rates to maximise your occupancy and revenue.',
-    large: false,
   },
   {
     icon: (
@@ -111,7 +104,6 @@ const services = [
     ),
     title: 'Booking Management',
     copy: 'We handle every enquiry, confirmation, and guest communication on your behalf.',
-    large: false,
   },
   {
     icon: (
@@ -121,7 +113,6 @@ const services = [
     ),
     title: 'Cleaning Coordination',
     copy: 'Our vetted cleaner network is notified of every checkout and confirms availability instantly.',
-    large: true,
   },
   {
     icon: (
@@ -132,7 +123,6 @@ const services = [
     ),
     title: 'Property Inspections',
     copy: 'Regular property checks ensure your listing maintains its reputation and standards.',
-    large: false,
   },
   {
     icon: (
@@ -142,7 +132,6 @@ const services = [
     ),
     title: 'Owner Dashboard',
     copy: 'Real-time revenue, occupancy rates, and pricing effectiveness — always in your pocket.',
-    large: false,
   },
 ]
 
@@ -199,130 +188,58 @@ export default function HomepageClient() {
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center bg-gradient-to-br from-slate-950 via-slate-900 to-brand-900 overflow-hidden">
-        {/* Grid overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/hero.png"
+            alt=""
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Gradient overlay — light at top, slightly deeper at bottom for text */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/55" />
+        </div>
 
-        {/* Animated blobs */}
-        <motion.div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-brand-600/20 blur-3xl"
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute -bottom-40 -left-40 w-[400px] h-[400px] rounded-full bg-brand-500/15 blur-3xl"
-          animate={{ scale: [1.2, 1, 1.2], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        {/* Centred content */}
+        <div className="relative text-center px-4">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="font-display text-7xl sm:text-9xl lg:text-[11rem] font-bold text-white leading-none tracking-tight drop-shadow-2xl mb-5"
+          >
+            Prestolet
+          </motion.h1>
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-32 w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left — copy */}
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              animate="show"
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.35 }}
+            className="text-white/85 text-base sm:text-xl font-light tracking-[0.25em] uppercase mb-10"
+          >
+            Effortless Short-Stay Lettings Management
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <Link
+              href="/auth/register"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-800 font-bold rounded-xl hover:bg-cream-100 transition shadow-xl text-base"
             >
-              <motion.span
-                variants={fadeUp}
-                className="inline-flex gap-2 items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-brand-300 text-xs font-semibold tracking-widest uppercase mb-6"
-              >
-                Short-Stay Lettings Management
-              </motion.span>
-
-              <motion.h1
-                variants={fadeUp}
-                className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight mb-6"
-              >
-                Effortless Property Management.{' '}
-                <span className="text-brand-400">Maximum Returns.</span>
-              </motion.h1>
-
-              <motion.p
-                variants={fadeUp}
-                className="text-lg sm:text-xl text-slate-300 max-w-2xl mb-10 leading-relaxed"
-              >
-                We list your property across Airbnb, Booking.com, Vrbo and every major platform — managed from one
-                intelligent dashboard. Real-time insights. Coordinated cleaning. Zero effort.
-              </motion.p>
-
-              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/auth/register"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-900 font-bold rounded-xl hover:bg-brand-50 transition shadow-xl text-base"
-                >
-                  List your property &rarr;
-                </Link>
-                <Link
-                  href="/#who-we-are"
-                  className="inline-flex items-center justify-center px-8 py-4 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 transition text-base"
-                >
-                  How it works
-                </Link>
-              </motion.div>
-            </motion.div>
-
-            {/* Right — floating dashboard card */}
-            <div className="hidden lg:flex justify-end">
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.4, ease: 'easeOut' }}
-              >
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="bg-white rounded-2xl shadow-2xl p-5 w-80"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">The Lakeside Retreat</p>
-                      <p className="text-xs text-gray-500 mt-0.5">Lake District, UK</p>
-                    </div>
-                    <span className="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-semibold">
-                      Active
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    {[
-                      { label: 'Revenue', value: '£4,820' },
-                      { label: 'Occupancy', value: '84.2%' },
-                      { label: 'Per night', value: '£127' },
-                    ].map((stat) => (
-                      <div key={stat.label} className="bg-gray-50 rounded-xl p-3 text-center">
-                        <p className="text-sm font-black text-gray-900">{stat.value}</p>
-                        <p className="text-[10px] text-gray-500 mt-0.5">{stat.label}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500">Occupancy rate</span>
-                      <span className="font-semibold text-gray-800">84.2%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: '84.2%' }}
-                        transition={{ duration: 1.5, delay: 1, ease: 'easeOut' }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex gap-1.5 flex-wrap">
-                    {['Airbnb', 'Booking.com', 'Vrbo'].map((p) => (
-                      <span key={p} className="text-[10px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded-full border border-brand-100 font-medium">
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              </motion.div>
-            </div>
-          </div>
+              List your property &rarr;
+            </Link>
+            <Link
+              href="/#who-we-are"
+              className="inline-flex items-center justify-center px-8 py-4 border border-white/50 text-white font-semibold rounded-xl hover:bg-white/10 transition text-base backdrop-blur-sm"
+            >
+              How it works
+            </Link>
+          </motion.div>
         </div>
 
         {/* Scroll indicator */}
@@ -331,17 +248,17 @@ export default function HomepageClient() {
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
         >
-          <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </motion.div>
       </section>
 
       {/* ── MARQUEE BAR ───────────────────────────────────────────────────── */}
-      <div className="overflow-hidden bg-white border-y border-gray-100 py-5">
+      <div className="overflow-hidden bg-cream-50 border-y border-cream-200 py-5">
         <div className="flex animate-marquee whitespace-nowrap">
           {platforms.map((p, i) => (
-            <span key={i} className="mx-8 text-gray-400 font-semibold text-sm uppercase tracking-widest">
+            <span key={i} className="mx-8 text-brand-600/60 font-semibold text-sm uppercase tracking-widest">
               {p}
             </span>
           ))}
@@ -349,7 +266,7 @@ export default function HomepageClient() {
       </div>
 
       {/* ── WHO WE ARE ────────────────────────────────────────────────────── */}
-      <section id="who-we-are" className="bg-white py-24">
+      <section id="who-we-are" className="bg-cream-50 py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left text */}
@@ -360,14 +277,14 @@ export default function HomepageClient() {
               variants={slideLeft}
             >
               <span className="text-brand-600 text-sm font-semibold uppercase tracking-widest">Who We Are</span>
-              <h2 className="mt-3 text-4xl font-black text-gray-900 leading-tight mb-6">
+              <h2 className="mt-3 text-4xl font-black text-brand-900 leading-tight mb-6">
                 A dedicated partner for your property
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-5 text-lg">
+              <p className="text-stone-600 leading-relaxed mb-5 text-lg">
                 Prestolet is a dedicated short-stay lettings management company focused on enhancing your rental
                 experience, ensuring an effortless, hands-free approach to lettings.
               </p>
-              <p className="text-gray-600 leading-relaxed text-lg mb-8">
+              <p className="text-stone-600 leading-relaxed text-lg mb-8">
                 We handle everything from managing bookings and coordinating cleaning to conducting inspections and
                 arranging maintenance. With us, clients can maximise occupancy and profit effortlessly.
               </p>
@@ -381,7 +298,7 @@ export default function HomepageClient() {
                 ].map((stat) => (
                   <div key={stat.label}>
                     <p className="text-2xl font-black text-brand-600">{stat.value}</p>
-                    <p className="text-sm text-gray-500">{stat.label}</p>
+                    <p className="text-sm text-stone-500">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -408,31 +325,31 @@ export default function HomepageClient() {
               <div className="relative w-full max-w-sm">
                 <div className="bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl p-1 shadow-2xl">
                   <div className="bg-white rounded-xl overflow-hidden">
-                    <div className="h-40 bg-gradient-to-br from-brand-100 to-brand-200 flex items-center justify-center">
-                      <svg className="w-16 h-16 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                    <div className="h-40 bg-gradient-to-br from-cream-100 to-cream-200 flex items-center justify-center">
+                      <svg className="w-16 h-16 text-brand-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12 11.204 3.045c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                       </svg>
                     </div>
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm font-semibold text-gray-900">The Lakeside Retreat</span>
+                        <span className="text-sm font-semibold text-stone-800">The Lakeside Retreat</span>
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Active</span>
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-500">Revenue to date</span>
-                          <span className="font-semibold text-gray-800">£4,820</span>
+                          <span className="text-stone-400">Revenue to date</span>
+                          <span className="font-semibold text-stone-700">£4,820</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-500">Occupancy rate</span>
-                          <span className="font-semibold text-gray-800">84.2%</span>
+                          <span className="text-stone-400">Occupancy rate</span>
+                          <span className="font-semibold text-stone-700">84.2%</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-500">Avg nightly rate</span>
-                          <span className="font-semibold text-gray-800">£127</span>
+                          <span className="text-stone-400">Avg nightly rate</span>
+                          <span className="font-semibold text-stone-700">£127</span>
                         </div>
                       </div>
-                      <div className="mt-4 flex gap-1">
+                      <div className="mt-4 flex gap-1 flex-wrap">
                         {['Airbnb', 'Booking.com', 'Vrbo'].map((p) => (
                           <span key={p} className="text-[10px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded-full border border-brand-100">
                             {p}
@@ -449,7 +366,7 @@ export default function HomepageClient() {
       </section>
 
       {/* ── STATS STRIP ───────────────────────────────────────────────────── */}
-      <section className="bg-slate-900 text-white py-16">
+      <section className="bg-brand-800 text-white py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -465,10 +382,10 @@ export default function HomepageClient() {
               { to: 2, suffix: 'M+', prefix: '£', label: 'Revenue Generated' },
             ].map((stat) => (
               <motion.div key={stat.label} variants={fadeUp}>
-                <p className="text-5xl font-black text-brand-400 mb-2">
+                <p className="text-5xl font-black text-cream-100 mb-2">
                   <Counter to={stat.to} suffix={stat.suffix} prefix={stat.prefix} />
                 </p>
-                <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
+                <p className="text-brand-200 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -476,12 +393,12 @@ export default function HomepageClient() {
       </section>
 
       {/* ── SERVICES ──────────────────────────────────────────────────────── */}
-      <section id="services" className="bg-gray-50 py-24">
+      <section id="services" className="bg-cream-100 py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-14">
             <span className="text-brand-600 text-sm font-semibold uppercase tracking-widest">What We Do</span>
-            <h2 className="mt-3 text-4xl font-black text-gray-900">Everything your property needs</h2>
-            <p className="mt-4 text-gray-500 max-w-xl mx-auto">
+            <h2 className="mt-3 text-4xl font-black text-brand-900">Everything your property needs</h2>
+            <p className="mt-4 text-stone-500 max-w-xl mx-auto">
               From listing to maintenance, we cover the full lifecycle of short-stay lettings management.
             </p>
           </AnimatedSection>
@@ -497,16 +414,16 @@ export default function HomepageClient() {
               <motion.div
                 key={service.title}
                 variants={fadeUp}
-                whileHover={{ y: -4, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
-                className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${service.large ? 'lg:col-span-1' : ''}`}
+                whileHover={{ y: -4, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+                className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden"
               >
                 <div className="h-1.5 w-full bg-gradient-to-r from-brand-400 to-brand-600" />
                 <div className="p-7">
                   <div className="w-12 h-12 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center mb-5">
                     {service.icon}
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 mb-2">{service.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{service.copy}</p>
+                  <h3 className="text-base font-bold text-stone-800 mb-2">{service.title}</h3>
+                  <p className="text-sm text-stone-500 leading-relaxed">{service.copy}</p>
                 </div>
               </motion.div>
             ))}
@@ -519,8 +436,8 @@ export default function HomepageClient() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
             <span className="text-brand-600 text-sm font-semibold uppercase tracking-widest">The Process</span>
-            <h2 className="mt-3 text-4xl font-black text-gray-900">How It Works</h2>
-            <p className="mt-4 text-gray-500 max-w-xl mx-auto">Getting started takes minutes. We do the rest.</p>
+            <h2 className="mt-3 text-4xl font-black text-brand-900">How It Works</h2>
+            <p className="mt-4 text-stone-500 max-w-xl mx-auto">Getting started takes minutes. We do the rest.</p>
           </AnimatedSection>
 
           <motion.div
@@ -532,7 +449,6 @@ export default function HomepageClient() {
           >
             {steps.map((step, index) => (
               <motion.div key={step.number} variants={fadeUp} className="relative">
-                {/* Connector line between steps (desktop) */}
                 {index < steps.length - 1 && (
                   <div className="hidden md:block absolute top-10 left-full w-full z-0 px-4">
                     <motion.div
@@ -545,8 +461,8 @@ export default function HomepageClient() {
                   </div>
                 )}
                 <div className="text-8xl font-black text-brand-100 mb-4 leading-none">{step.number}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{step.copy}</p>
+                <h3 className="text-xl font-bold text-brand-900 mb-3">{step.title}</h3>
+                <p className="text-stone-500 leading-relaxed">{step.copy}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -563,7 +479,7 @@ export default function HomepageClient() {
       </section>
 
       {/* ── CLEANER SECTION ───────────────────────────────────────────────── */}
-      <section id="cleaners" className="bg-brand-50 py-24">
+      <section id="cleaners" className="bg-cream-100 py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Text */}
@@ -574,14 +490,14 @@ export default function HomepageClient() {
               variants={slideLeft}
             >
               <span className="text-brand-600 text-sm font-semibold uppercase tracking-widest">Cleaning Coordination</span>
-              <h2 className="mt-3 text-4xl font-black text-gray-900 mb-6">
+              <h2 className="mt-3 text-4xl font-black text-brand-900 mb-6">
                 Seamless Cleaning Coordination
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-5">
+              <p className="text-stone-600 leading-relaxed mb-5">
                 The moment a guest checks out, our vetted cleaner network is notified automatically via SMS. Cleaners
                 confirm their availability in seconds — no phone calls, no chasing.
               </p>
-              <p className="text-gray-600 leading-relaxed mb-5">
+              <p className="text-stone-600 leading-relaxed mb-5">
                 Property owners can see cleaner confirmation status directly in their dashboard — every booking,
                 every time.
               </p>
@@ -592,7 +508,7 @@ export default function HomepageClient() {
                   'Full calendar visibility for scheduling',
                   'Coverage area matching for nearby jobs',
                 ].map((point) => (
-                  <li key={point} className="flex items-start gap-3 text-sm text-gray-600">
+                  <li key={point} className="flex items-start gap-3 text-sm text-stone-600">
                     <span className="mt-0.5 flex-shrink-0 w-5 h-5 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -619,11 +535,11 @@ export default function HomepageClient() {
       </section>
 
       {/* ── GLAMPING TEASER ───────────────────────────────────────────────── */}
-      <section className="bg-slate-900 py-20">
+      <section className="bg-brand-900 py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
             <motion.span
-              className="inline-block text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4"
+              className="inline-block text-sm font-semibold text-brand-300 uppercase tracking-widest mb-4"
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
             >
@@ -632,16 +548,16 @@ export default function HomepageClient() {
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-5 leading-tight">
               Glamping Ventures
             </h2>
-            <p className="text-slate-300 leading-relaxed mb-3 text-xl">
+            <p className="text-brand-200 leading-relaxed mb-3 text-xl">
               We&apos;re actively seeking unused land to develop premium glamping facilities — turning
               underutilised plots into profitable retreats.
             </p>
-            <p className="text-slate-400 mb-10 text-lg">
+            <p className="text-brand-300 mb-10 text-lg">
               Whether you own farmland, a field, or a woodland — we may be interested.
             </p>
             <a
               href="mailto:hello@prestolet.co.uk?subject=Land enquiry"
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-slate-500 text-white rounded-xl hover:border-white hover:bg-white/5 transition font-medium text-base"
+              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-brand-500 text-white rounded-xl hover:border-brand-300 hover:bg-white/5 transition font-medium text-base"
             >
               Interested in land? Get in touch
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -654,7 +570,6 @@ export default function HomepageClient() {
 
       {/* ── FINAL CTA ─────────────────────────────────────────────────────── */}
       <section className="bg-gradient-to-br from-brand-600 to-brand-800 py-24 relative overflow-hidden">
-        {/* Shimmer overlay */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
           animate={{ x: ['-100%', '200%'] }}
@@ -672,7 +587,7 @@ export default function HomepageClient() {
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
               <Link
                 href="/auth/register"
-                className="inline-flex items-center gap-2 px-10 py-5 bg-white text-brand-700 font-black rounded-xl hover:bg-brand-50 transition shadow-2xl text-lg"
+                className="inline-flex items-center gap-2 px-10 py-5 bg-white text-brand-700 font-black rounded-xl hover:bg-cream-100 transition shadow-2xl text-lg"
               >
                 Get started today
               </Link>
@@ -701,20 +616,20 @@ function PhoneMockup() {
 
   return (
     <div ref={ref} className="w-72">
-      <div className="bg-gray-900 rounded-3xl p-4 shadow-2xl">
-        <div className="bg-gray-800 rounded-2xl overflow-hidden">
+      <div className="bg-brand-900 rounded-3xl p-4 shadow-2xl">
+        <div className="bg-brand-800 rounded-2xl overflow-hidden">
           {/* Phone top bar */}
-          <div className="bg-gray-900 px-4 py-3 flex items-center gap-3">
+          <div className="bg-brand-900 px-4 py-3 flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center">
               <span className="text-white text-xs font-bold">P</span>
             </div>
             <div>
               <p className="text-white text-xs font-semibold">Prestolet</p>
-              <p className="text-gray-400 text-[10px]">+44 7700 900123</p>
+              <p className="text-brand-300 text-[10px]">+44 7700 900123</p>
             </div>
           </div>
 
-          <div className="px-4 py-5 space-y-3 bg-gray-50 min-h-[220px]">
+          <div className="px-4 py-5 space-y-3 bg-cream-50 min-h-[220px]">
             <AnimatePresence>
               {smsMessages.slice(0, visibleCount).map((msg, i) => (
                 <motion.div
@@ -732,10 +647,10 @@ function PhoneMockup() {
                         : 'bg-white rounded-tl-sm'
                     }`}
                   >
-                    <p className={`text-xs leading-relaxed ${msg.side === 'right' ? 'text-white font-semibold' : 'text-gray-800'}`}>
+                    <p className={`text-xs leading-relaxed ${msg.side === 'right' ? 'text-white font-semibold' : 'text-stone-800'}`}>
                       {msg.text}
                     </p>
-                    <p className={`text-[10px] mt-1 text-right ${msg.side === 'right' ? 'text-brand-200' : 'text-gray-400'}`}>
+                    <p className={`text-[10px] mt-1 text-right ${msg.side === 'right' ? 'text-brand-200' : 'text-stone-400'}`}>
                       {msg.time}
                     </p>
                   </div>

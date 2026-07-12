@@ -10,17 +10,26 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50:  '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50:  '#f0f7f2',
+          100: '#d9ecdf',
+          200: '#b3d9be',
+          300: '#7fbd94',
+          400: '#4d9e6a',
+          500: '#2d834f',
+          600: '#226840',
+          700: '#1a5433',
+          800: '#164529',
+          900: '#103520',
         },
+        cream: {
+          50:  '#FEFCF8',
+          100: '#FAF6EF',
+          200: '#F2EAD9',
+          300: '#E8DECA',
+        },
+      },
+      fontFamily: {
+        display: ['var(--font-display)', 'Georgia', 'serif'],
       },
       animation: {
         marquee: 'marquee 25s linear infinite',

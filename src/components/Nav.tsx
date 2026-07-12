@@ -16,7 +16,7 @@ export default function Nav() {
   }, [])
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[9999] bg-white border-b border-gray-100 transition-shadow duration-300 ${scrolled ? 'shadow-md' : 'shadow-none'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-[9999] bg-cream-50 border-b border-cream-200 transition-shadow duration-300 ${scrolled ? 'shadow-sm' : 'shadow-none'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

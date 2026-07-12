@@ -3,40 +3,40 @@ import { Logo } from '@/components/Logo'
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-300">
+    <footer className="bg-cream-200 text-stone-600 border-t border-cream-300">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Col 1 — Brand */}
           <div>
             <div className="mb-3">
-              <Logo size="sm" inverted />
+              <Logo size="sm" />
             </div>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <p className="text-sm text-stone-500 leading-relaxed">
               Effortless short-stay lettings management. We handle everything so you can focus on what matters.
             </p>
           </div>
 
           {/* Col 2 — Quick links */}
           <div>
-            <p className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Quick links</p>
+            <p className="text-sm font-semibold text-brand-800 uppercase tracking-wider mb-4">Quick links</p>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/#services" className="text-slate-400 hover:text-white transition">
+                <Link href="/#services" className="text-stone-500 hover:text-brand-600 transition">
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/#how-it-works" className="text-slate-400 hover:text-white transition">
+                <Link href="/#how-it-works" className="text-stone-500 hover:text-brand-600 transition">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-slate-400 hover:text-white transition">
+                <Link href="/dashboard" className="text-stone-500 hover:text-brand-600 transition">
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/auth/register" className="text-slate-400 hover:text-white transition">
+                <Link href="/auth/register" className="text-stone-500 hover:text-brand-600 transition">
                   Register
                 </Link>
               </li>
@@ -45,16 +45,16 @@ export default function Footer() {
 
           {/* Col 3 — Contact */}
           <div>
-            <p className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Contact</p>
-            <ul className="space-y-2 text-sm text-slate-400">
+            <p className="text-sm font-semibold text-brand-800 uppercase tracking-wider mb-4">Contact</p>
+            <ul className="space-y-2 text-sm text-stone-500">
               <li>
-                <a href="mailto:hello@prestolet.co.uk" className="hover:text-white transition">
+                <a href="mailto:hello@prestolet.co.uk" className="hover:text-brand-600 transition">
                   hello@prestolet.co.uk
                 </a>
               </li>
               <li>Operating across the UK</li>
               <li>
-                <a href="https://prestolet.co.uk" className="hover:text-white transition">
+                <a href="https://prestolet.co.uk" className="hover:text-brand-600 transition">
                   prestolet.co.uk
                 </a>
               </li>
@@ -62,7 +62,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-slate-800 text-sm text-slate-500 text-center">
+        <div className="mt-12 pt-6 border-t border-cream-300 text-sm text-stone-400 text-center">
           &copy; 2025 Prestolet Ltd. All rights reserved.
         </div>
       </div>
