@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/lib/db'
-import { createProperty } from '@/lib/guesty'
 import { sendNewPropertyAlert } from '@/lib/mail'
 
 export async function POST(req: NextRequest) {
@@ -48,30 +47,6 @@ export async function POST(req: NextRequest) {
     ownerName: session.user.name ?? '',
     ownerEmail: session.user.email ?? '',
   }).catch((err) => console.error('Mail send failed:', err))
-
-  // Push to Guesty — non-blocking; status updates to ACTIVE on success
-  createProperty({
-    nickname: body.name,
-    address: {
-      full: body.address,
-      city: body.address.split(',').at(-2)?.trim() ?? '',
-      country: 'GB',
-      zipcode: body.postcode,
-    },
-    propertyType: body.type,
-    bedrooms: body.bedrooms,
-    bathrooms: body.bathrooms,
-    prices: { basePrice: body.expectedRate },
-    pictures: (body.photos ?? []).map((url) => ({ original: url })),
-    publicDescription: { summary: body.description ?? '' },
-  })
-    .then((guesty) =>
-      db.property.update({
-        where: { id: property.id },
-        data: { guestyId: guesty._id, status: 'ACTIVE' },
-      })
-    )
-    .catch((err) => console.error('Guesty push failed:', err))
 
   return NextResponse.json(property, { status: 201 })
 }
