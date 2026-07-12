@@ -13,7 +13,7 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "db:activate-test": "node -e \"const {PrismaClient}=require('@prisma/client');const db=new PrismaClient();db.property.updateMany({where:{status:'PENDING'},data:{status:'ACTIVE'}}).then(r=>console.log('Activated:',r.count,'properties')).finally(()=>db.$disconnect())\""
+    "db:activate-test": "node scripts/activate-test.js"
   },
   "dependencies": {
     "@prisma/client": "^5.16.0",
