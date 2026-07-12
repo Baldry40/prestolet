@@ -17,46 +17,30 @@ export default function OnboardingPage() {
   const [expectedRate, setExpectedRate] = useState('')
   const [description, setDescription] = useState('')
   const [photos, setPhotos] = useState<string[]>([''])
-
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   function setPhoto(index: number, value: string) {
-    setPhotos((prev) => {
-      const next = [...prev]
-      next[index] = value
-      return next
-    })
+    setPhotos((prev) => { const next = [...prev]; next[index] = value; return next })
   }
-
-  function addPhotoField() {
-    if (photos.length < 5) setPhotos((prev) => [...prev, ''])
-  }
-
-  function removePhotoField(index: number) {
-    setPhotos((prev) => prev.filter((_, i) => i !== index))
-  }
+  function addPhotoField() { if (photos.length < 5) setPhotos((prev) => [...prev, '']) }
+  function removePhotoField(index: number) { setPhotos((prev) => prev.filter((_, i) => i !== index)) }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    const filteredPhotos = photos.filter((url) => url.trim() !== '')
-
     const res = await fetch('/api/properties', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name,
-        address,
-        postcode,
-        type,
+        name, address, postcode, type,
         bedrooms: Number(bedrooms),
         bathrooms: Number(bathrooms),
         expectedRate: parseFloat(expectedRate),
         description,
-        photos: filteredPhotos,
+        photos: photos.filter((url) => url.trim() !== ''),
       }),
     })
 
@@ -71,13 +55,16 @@ export default function OnboardingPage() {
     router.push('/dashboard')
   }
 
+  const inputClass = 'w-full border border-cream-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition bg-cream-50'
+  const sectionClass = 'bg-white rounded-2xl border border-cream-200 shadow-sm p-6'
+  const labelClass = 'block text-sm font-medium text-stone-700 mb-1'
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Simple top bar */}
-      <header className="bg-white border-b border-gray-200">
+    <div className="min-h-screen bg-cream-50">
+      <header className="bg-white border-b border-cream-200">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-base font-bold text-brand-700">Prestolet</Link>
-          <Link href="/dashboard" className="text-sm text-gray-500 hover:text-brand-700 transition">
+          <Link href="/" className="font-display text-xl font-bold text-brand-800">Prestolet</Link>
+          <Link href="/dashboard" className="text-sm text-stone-500 hover:text-brand-700 transition">
             &larr; Dashboard
           </Link>
         </div>
@@ -85,8 +72,8 @@ export default function OnboardingPage() {
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Add a property</h1>
-          <p className="text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-stone-900">Add a property</h1>
+          <p className="text-stone-500 mt-1">
             Fill in your property details and we&apos;ll get it listed across Airbnb, Booking.com, Vrbo and more.
           </p>
         </div>
@@ -97,155 +84,93 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic details */}
-          <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-5">Basic details</h2>
+          <section className={sectionClass}>
+            <h2 className="text-base font-semibold text-stone-800 mb-5">Basic details</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Property name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  placeholder="e.g. The Lakeside Retreat"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                />
+                <label className={labelClass}>Property name</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)}
+                  required placeholder="e.g. The Lakeside Retreat" className={inputClass} />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Property type</label>
-                <select
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                >
-                  {PROPERTY_TYPES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
+                <label className={labelClass}>Property type</label>
+                <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
+                  {PROPERTY_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={bedrooms}
-                    onChange={(e) => setBedrooms(Number(e.target.value))}
-                    required
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                  />
+                  <label className={labelClass}>Bedrooms</label>
+                  <input type="number" min={1} max={20} value={bedrooms}
+                    onChange={(e) => setBedrooms(Number(e.target.value))} required className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={bathrooms}
-                    onChange={(e) => setBathrooms(Number(e.target.value))}
-                    required
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                  />
+                  <label className={labelClass}>Bathrooms</label>
+                  <input type="number" min={1} max={20} value={bathrooms}
+                    onChange={(e) => setBathrooms(Number(e.target.value))} required className={inputClass} />
                 </div>
               </div>
             </div>
           </section>
 
           {/* Location */}
-          <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-5">Location</h2>
+          <section className={sectionClass}>
+            <h2 className="text-base font-semibold text-stone-800 mb-5">Location</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full address</label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  required
-                  placeholder="e.g. 12 Lake Road, Windermere, Cumbria"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                />
+                <label className={labelClass}>Full address</label>
+                <input type="text" value={address} onChange={(e) => setAddress(e.target.value)}
+                  required placeholder="e.g. 12 Lake Road, Windermere, Cumbria" className={inputClass} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
-                <input
-                  type="text"
-                  value={postcode}
-                  onChange={(e) => setPostcode(e.target.value)}
-                  required
-                  placeholder="e.g. LA23 1BJ"
-                  className="w-full sm:w-40 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition uppercase"
-                />
+                <label className={labelClass}>Postcode</label>
+                <input type="text" value={postcode} onChange={(e) => setPostcode(e.target.value)}
+                  required placeholder="e.g. LA23 1BJ"
+                  className={`${inputClass} sm:w-40 uppercase`} />
               </div>
             </div>
           </section>
 
           {/* Pricing */}
-          <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-5">Pricing</h2>
+          <section className={sectionClass}>
+            <h2 className="text-base font-semibold text-stone-800 mb-5">Pricing</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Expected nightly rate (£)
-              </label>
+              <label className={labelClass}>Expected nightly rate (£)</label>
               <div className="relative w-full sm:w-48">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">£</span>
-                <input
-                  type="number"
-                  min={1}
-                  step="0.01"
-                  value={expectedRate}
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">£</span>
+                <input type="number" min={1} step="0.01" value={expectedRate}
                   onChange={(e) => setExpectedRate(e.target.value)}
-                  required
-                  placeholder="120.00"
-                  className="w-full pl-7 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                />
+                  required placeholder="120.00"
+                  className={`${inputClass} pl-7`} />
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-stone-400 mt-1.5">
                 This is your base rate — dynamic pricing may adjust it to optimise occupancy.
               </p>
             </div>
           </section>
 
           {/* Description */}
-          <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-5">Description</h2>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={5}
-              placeholder="Tell guests what makes your property special…"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition resize-y"
-            />
+          <section className={sectionClass}>
+            <h2 className="text-base font-semibold text-stone-800 mb-5">Description</h2>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)}
+              rows={5} placeholder="Tell guests what makes your property special…"
+              className={`${inputClass} resize-y`} />
           </section>
 
           {/* Photos */}
-          <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-1">Photos</h2>
-            <p className="text-sm text-gray-500 mb-5">
-              Add up to 5 photo URLs. We recommend high-quality landscape images.
-            </p>
+          <section className={sectionClass}>
+            <h2 className="text-base font-semibold text-stone-800 mb-1">Photos</h2>
+            <p className="text-sm text-stone-500 mb-5">Add up to 5 photo URLs. We recommend high-quality landscape images.</p>
             <div className="space-y-3">
               {photos.map((url, i) => (
                 <div key={i} className="flex gap-2">
-                  <input
-                    type="url"
-                    value={url}
-                    onChange={(e) => setPhoto(i, e.target.value)}
-                    placeholder={`Photo ${i + 1} URL`}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
-                  />
+                  <input type="url" value={url} onChange={(e) => setPhoto(i, e.target.value)}
+                    placeholder={`Photo ${i + 1} URL`} className={inputClass} />
                   {photos.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removePhotoField(i)}
-                      className="px-3 py-2 text-gray-400 hover:text-red-500 transition"
-                      aria-label="Remove photo"
-                    >
+                    <button type="button" onClick={() => removePhotoField(i)}
+                      className="px-3 py-2 text-stone-400 hover:text-red-500 transition" aria-label="Remove photo">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                       </svg>
@@ -255,11 +180,8 @@ export default function OnboardingPage() {
               ))}
             </div>
             {photos.length < 5 && (
-              <button
-                type="button"
-                onClick={addPhotoField}
-                className="mt-3 text-sm text-brand-600 hover:text-brand-700 font-medium"
-              >
+              <button type="button" onClick={addPhotoField}
+                className="mt-3 text-sm text-brand-600 hover:text-brand-700 font-medium">
                 + Add another photo
               </button>
             )}
