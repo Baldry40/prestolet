@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/lib/db'
 import { createProperty } from '@/lib/guesty'
+import { sendNewPropertyAlert } from '@/lib/mail'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -34,6 +35,19 @@ export async function POST(req: NextRequest) {
       photos: body.photos ?? [],
     },
   })
+
+  // Notify admin — non-blocking
+  sendNewPropertyAlert({
+    name: property.name,
+    address: property.address,
+    postcode: property.postcode,
+    type: property.type,
+    bedrooms: property.bedrooms,
+    bathrooms: property.bathrooms,
+    expectedRate: property.expectedRate.toString(),
+    ownerName: session.user.name ?? '',
+    ownerEmail: session.user.email ?? '',
+  }).catch((err) => console.error('Mail send failed:', err))
 
   // Push to Guesty — non-blocking; status updates to ACTIVE on success
   createProperty({

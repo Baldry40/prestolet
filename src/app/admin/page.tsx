@@ -3,6 +3,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { approveProperty, rejectProperty } from './actions'
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions)
@@ -89,6 +90,7 @@ export default async function AdminPage() {
                   <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Guesty ID</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">Listed</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -114,6 +116,48 @@ export default async function AdminPage() {
                       {new Date(p.createdAt).toLocaleDateString('en-GB', {
                         day: 'numeric', month: 'short', year: 'numeric',
                       })}
+                    </td>
+                    <td className="px-5 py-3">
+                      {p.status === 'PENDING' && (
+                        <div className="flex gap-2">
+                          <form action={approveProperty.bind(null, p.id)}>
+                            <button
+                              type="submit"
+                              className="text-xs px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium"
+                            >
+                              Approve
+                            </button>
+                          </form>
+                          <form action={rejectProperty.bind(null, p.id)}>
+                            <button
+                              type="submit"
+                              className="text-xs px-3 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition font-medium"
+                            >
+                              Reject
+                            </button>
+                          </form>
+                        </div>
+                      )}
+                      {p.status === 'ACTIVE' && (
+                        <form action={rejectProperty.bind(null, p.id)}>
+                          <button
+                            type="submit"
+                            className="text-xs px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg hover:bg-red-100 hover:text-red-600 transition font-medium"
+                          >
+                            Deactivate
+                          </button>
+                        </form>
+                      )}
+                      {p.status === 'INACTIVE' && (
+                        <form action={approveProperty.bind(null, p.id)}>
+                          <button
+                            type="submit"
+                            className="text-xs px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg hover:bg-green-100 hover:text-green-600 transition font-medium"
+                          >
+                            Re-activate
+                          </button>
+                        </form>
+                      )}
                     </td>
                   </tr>
                 ))}
