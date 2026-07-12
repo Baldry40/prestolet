@@ -40,11 +40,11 @@ export default async function DashboardPage() {
 
   const propertyData = await Promise.all(
     properties.map(async (p) => {
-      const isActive = p.status === 'ACTIVE'
-      const stats = isActive
+      const showData = p.status === 'ACTIVE' || p.status === 'PENDING'
+      const stats = showData
         ? await getInsights(p.id, p.guestyId, Number(p.expectedRate))
         : null
-      const bookings: MockBooking[] = isActive
+      const bookings: MockBooking[] = showData
         ? getMockBookings(p.id, now.getFullYear(), now.getMonth())
         : []
       return { property: p, stats, bookings }
@@ -149,18 +149,20 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Pending state */}
-          {property.status === 'PENDING' && (
-            <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5 text-sm text-amber-800">
-              <p className="font-semibold mb-1">Under review</p>
-              <p className="text-amber-700 text-xs leading-relaxed">
-                Your property has been submitted and is being reviewed by our team. Stats and your booking calendar will appear once it goes live.
-              </p>
+          {/* Pending — show preview stats with notice */}
+          {property.status === 'PENDING' && stats && (
+            <div className="space-y-4">
+              <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-xs text-amber-700 flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+                Under review — the figures below are a preview of what your dashboard will look like once live.
+              </div>
             </div>
           )}
 
-          {/* Active — stats + calendar */}
-          {property.status === 'ACTIVE' && stats && (
+          {/* Active or Pending — stats + calendar */}
+          {(property.status === 'ACTIVE' || property.status === 'PENDING') && stats && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left — stats */}
               <div className="space-y-4">
