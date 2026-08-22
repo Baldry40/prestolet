@@ -21,16 +21,37 @@ export async function GET() {
 
     const token = body.access_token as string
 
-    const listingsRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
-      headers: { Authorization: `Bearer ${token}` },
+    const testPayload = {
+      nickname: 'Test Property',
+      address: {
+        full: '1 Test Street, London',
+        city: 'London',
+        country: 'GB',
+        zipcode: 'SW1A 1AA',
+      },
+      propertyType: 'APARTMENT',
+      bedrooms: 1,
+      bathrooms: 1,
+      prices: { basePrice: 100 },
+      pictures: [],
+      publicDescription: { summary: 'Test' },
+    }
+
+    const postRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(testPayload),
     })
-    const listingsBody = await listingsRes.json()
+    const postBody = await postRes.json()
 
     return NextResponse.json({
-      ok: true,
+      ok: postRes.ok,
       tokenObtained: true,
-      listingsStatus: listingsRes.status,
-      listings: listingsBody,
+      postStatus: postRes.status,
+      postResponse: postBody,
     })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) })
