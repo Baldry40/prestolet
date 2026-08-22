@@ -20,29 +20,29 @@ export async function approveProperty(propertyId: string) {
     data: { status: 'ACTIVE' },
   })
 
-  // Push to Guesty — non-blocking
-  createProperty({
-    nickname: property.name,
-    address: {
-      full: property.address,
-      city: property.address.split(',').at(-2)?.trim() ?? '',
-      country: 'GB',
-      zipcode: property.postcode,
-    },
-    propertyType: property.type,
-    bedrooms: property.bedrooms,
-    bathrooms: property.bathrooms,
-    prices: { basePrice: Number(property.expectedRate) },
-    pictures: ((property.photos as string[]) ?? []).map((url) => ({ original: url })),
-    publicDescription: { summary: property.description ?? '' },
-  })
-    .then((guesty) =>
-      db.property.update({
-        where: { id: property.id },
-        data: { guestyId: guesty._id },
-      })
-    )
-    .catch((err) => console.error('Guesty push failed (no credentials yet):', err))
+  try {
+    const guesty = await createProperty({
+      nickname: property.name,
+      address: {
+        full: property.address,
+        city: property.address.split(',').at(-2)?.trim() ?? '',
+        country: 'GB',
+        zipcode: property.postcode,
+      },
+      propertyType: property.type,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      prices: { basePrice: Number(property.expectedRate) },
+      pictures: ((property.photos as string[]) ?? []).map((url) => ({ original: url })),
+      publicDescription: { summary: property.description ?? '' },
+    })
+    await db.property.update({
+      where: { id: property.id },
+      data: { guestyId: guesty._id },
+    })
+  } catch (err) {
+    throw new Error(`Guesty push failed: ${err}`)
+  }
 
   revalidatePath('/admin')
 }
