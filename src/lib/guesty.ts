@@ -47,6 +47,7 @@ async function guestyFetch(path: string, options: RequestInit = {}) {
 
 export type GuestyPropertyPayload = {
   nickname: string
+  title: string
   address: {
     full: string
     city: string

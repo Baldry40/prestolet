@@ -5,6 +5,7 @@ export async function GET() {
   try {
     const result = await createProperty({
       nickname: 'Test Property',
+      title: 'Test Property',
       address: {
         full: '1 Test Street, London',
         city: 'London',

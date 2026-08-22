@@ -23,6 +23,7 @@ export async function approveProperty(propertyId: string) {
   try {
     const guesty = await createProperty({
       nickname: property.name,
+      title: property.name,
       address: {
         full: property.address,
         city: property.address.split(',').at(-2)?.trim() ?? '',
