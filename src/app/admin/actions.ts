@@ -7,6 +7,15 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createProperty } from '@/lib/guesty'
 
+const GUESTY_PROPERTY_TYPE: Record<string, string> = {
+  House: 'house',
+  Flat: 'apartment',
+  Cottage: 'cottage',
+  Lodge: 'cabin',
+  'Glamping Pod': 'campsite',
+  Other: 'guesthouse',
+}
+
 async function requireAdmin() {
   const session = await getServerSession(authOptions)
   if (!session || session.user.role !== 'ADMIN') redirect('/dashboard')
@@ -30,7 +39,7 @@ export async function approveProperty(propertyId: string) {
         country: 'GB',
         zipcode: property.postcode,
       },
-      propertyType: property.type,
+      propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? property.type.toLowerCase(),
       bedrooms: property.bedrooms,
       bathrooms: property.bathrooms,
       prices: { basePrice: Number(property.expectedRate) },

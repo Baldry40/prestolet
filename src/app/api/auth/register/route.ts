@@ -48,6 +48,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id: user.id }, { status: 201 })
   } catch (err) {
     console.error('Register error:', err)
-    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error.', detail: String(err) }, { status: 500 })
   }
 }

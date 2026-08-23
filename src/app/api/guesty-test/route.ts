@@ -29,7 +29,7 @@ export async function GET() {
         country: 'GB',
         zipcode: 'SW1A 1AA',
       },
-      propertyType: 'APARTMENT',
+      propertyType: 'apartment',
       bedrooms: 1,
       bathrooms: 1,
       prices: { basePrice: 100 },
