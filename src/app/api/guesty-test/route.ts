@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 
+let tokenCache: { token: string; expiresAt: number } | null = null
+
 async function getToken() {
+  if (tokenCache && Date.now() < tokenCache.expiresAt) return tokenCache.token
+
   const res = await fetch('https://open-api.guesty.com/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -13,7 +17,8 @@ async function getToken() {
   })
   const data = await res.json()
   if (!res.ok) throw new Error(`Auth failed: ${JSON.stringify(data)}`)
-  return data.access_token as string
+  tokenCache = { token: data.access_token, expiresAt: Date.now() + (data.expires_in - 60) * 1000 }
+  return tokenCache.token
 }
 
 async function guestyGet(token: string, path: string) {
@@ -27,12 +32,10 @@ async function guestyGet(token: string, path: string) {
 export async function GET() {
   try {
     const token = await getToken()
-
     const [account, users] = await Promise.all([
       guestyGet(token, '/accounts/me'),
       guestyGet(token, '/users?limit=3'),
     ])
-
     return NextResponse.json({ account, users })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) })

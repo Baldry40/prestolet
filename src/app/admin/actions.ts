@@ -24,37 +24,31 @@ async function requireAdmin() {
 export async function approveProperty(propertyId: string) {
   await requireAdmin()
 
-  const property = await db.property.update({
-    where: { id: propertyId },
-    data: { status: 'ACTIVE' },
+  const property = await db.property.findUniqueOrThrow({ where: { id: propertyId } })
+
+  const guesty = await createProperty({
+    type: 'SINGLE',
+    nickname: property.name,
+    title: property.name,
+    address: {
+      full: property.address,
+      city: property.address.split(',').at(-2)?.trim() ?? '',
+      country: 'United Kingdom',
+      zipcode: property.postcode,
+    },
+    propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? 'House',
+    bedrooms: property.bedrooms,
+    bathrooms: property.bathrooms,
+    prices: { basePrice: Number(property.expectedRate) },
+    pictures: ((property.photos as string[]) ?? []).map((url) => ({ original: url })),
+    publicDescription: { summary: property.description ?? '' },
+    terms: { minNights: 1, maxNights: 90 },
   })
 
-  try {
-    const guesty = await createProperty({
-      type: 'SINGLE',
-      nickname: property.name,
-      title: property.name,
-      address: {
-        full: property.address,
-        city: property.address.split(',').at(-2)?.trim() ?? '',
-        country: 'United Kingdom',
-        zipcode: property.postcode,
-      },
-      propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? 'House',
-      bedrooms: property.bedrooms,
-      bathrooms: property.bathrooms,
-      prices: { basePrice: Number(property.expectedRate) },
-      pictures: ((property.photos as string[]) ?? []).map((url) => ({ original: url })),
-      publicDescription: { summary: property.description ?? '' },
-      terms: { minNights: 1, maxNights: 90 },
-    })
-    await db.property.update({
-      where: { id: property.id },
-      data: { guestyId: guesty._id },
-    })
-  } catch (err) {
-    throw new Error(`Guesty push failed: ${err}`)
-  }
+  await db.property.update({
+    where: { id: property.id },
+    data: { status: 'ACTIVE', guestyId: guesty._id },
+  })
 
   revalidatePath('/admin')
 }
