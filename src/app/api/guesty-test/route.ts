@@ -16,37 +16,50 @@ async function getToken() {
   return data.access_token as string
 }
 
+async function postListing(token: string, payload: object) {
+  const res = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const body = await res.text()
+  return { ok: res.ok, status: res.status, body: JSON.parse(body) }
+}
+
 export async function GET() {
   try {
     const token = await getToken()
 
-    const payload = {
+    // Variant A: absolute minimum — only fields the schema lists as required
+    const minimal = {
       type: 'SINGLE',
-      nickname: 'Test Property',
-      title: 'Test Property',
+      nickname: 'Test Min',
+      title: 'Test Min',
+      address: { full: '1 Test Street, London' },
+      prices: { basePrice: 100 },
+      pictures: [],
+      terms: { minNights: 1, maxNights: 90 },
+    }
+
+    // Variant B: add address sub-fields back
+    const withAddress = {
+      ...minimal,
+      nickname: 'Test Addr',
+      title: 'Test Addr',
       address: {
         full: '1 Test Street, London',
         city: 'London',
         country: 'United Kingdom',
         zipcode: 'SW1A 1AA',
       },
-      propertyType: 'Apartment',
-      bedrooms: 1,
-      bathrooms: 1,
-      prices: { basePrice: 100 },
-      pictures: [],
-      publicDescription: { summary: 'Test' },
-      terms: { minNights: 1, maxNights: 90 },
     }
 
-    const res = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
+    const [resultA, resultB] = await Promise.all([
+      postListing(token, minimal),
+      postListing(token, withAddress),
+    ])
 
-    const body = await res.text()
-    return NextResponse.json({ ok: res.ok, status: res.status, body, sentPayload: payload })
+    return NextResponse.json({ minimal: resultA, withAddress: resultB })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) })
   }
