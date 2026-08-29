@@ -16,50 +16,49 @@ async function getToken() {
   return data.access_token as string
 }
 
-async function postListing(token: string, payload: object) {
+async function guestyGet(token: string, path: string) {
+  const res = await fetch(`${process.env.GUESTY_BASE_URL}${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const body = await res.text()
+  return { ok: res.ok, status: res.status, body: JSON.parse(body) }
+}
+
+async function postListing(token: string, label: string, payload: object) {
   const res = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
   const body = await res.text()
-  return { ok: res.ok, status: res.status, body: JSON.parse(body) }
+  return { label, ok: res.ok, status: res.status, body: JSON.parse(body) }
+}
+
+const BASE = {
+  nickname: 'Test',
+  title: 'Test',
+  address: { full: '1 Test Street, London' },
+  prices: { basePrice: 100 },
+  pictures: [],
+  terms: { minNights: 1, maxNights: 90 },
 }
 
 export async function GET() {
   try {
     const token = await getToken()
 
-    // Variant A: absolute minimum — only fields the schema lists as required
-    const minimal = {
-      type: 'SINGLE',
-      nickname: 'Test Min',
-      title: 'Test Min',
-      address: { full: '1 Test Street, London' },
-      prices: { basePrice: 100 },
-      pictures: [],
-      terms: { minNights: 1, maxNights: 90 },
-    }
-
-    // Variant B: add address sub-fields back
-    const withAddress = {
-      ...minimal,
-      nickname: 'Test Addr',
-      title: 'Test Addr',
-      address: {
-        full: '1 Test Street, London',
-        city: 'London',
-        country: 'United Kingdom',
-        zipcode: 'SW1A 1AA',
-      },
-    }
-
-    const [resultA, resultB] = await Promise.all([
-      postListing(token, minimal),
-      postListing(token, withAddress),
+    const [account, withSingle, withMtl, noType] = await Promise.all([
+      // 1. Verify account is readable
+      guestyGet(token, '/listings?limit=1'),
+      // 2. type=SINGLE (current attempt)
+      postListing(token, 'type=SINGLE', { ...BASE, type: 'SINGLE' }),
+      // 3. type=MTL
+      postListing(token, 'type=MTL', { ...BASE, type: 'MTL' }),
+      // 4. no type field at all — see if error message changes
+      postListing(token, 'no-type', BASE),
     ])
 
-    return NextResponse.json({ minimal: resultA, withAddress: resultB })
+    return NextResponse.json({ account, withSingle, withMtl, noType })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) })
   }
