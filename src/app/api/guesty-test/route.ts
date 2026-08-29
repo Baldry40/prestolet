@@ -27,7 +27,7 @@ export async function GET() {
       address: {
         full: '1 Test Street, London',
         city: 'London',
-        country: 'GB',
+        country: 'United Kingdom',
         zipcode: 'SW1A 1AA',
       },
       propertyType: 'Apartment',

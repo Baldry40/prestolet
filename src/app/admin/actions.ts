@@ -37,7 +37,7 @@ export async function approveProperty(propertyId: string) {
       address: {
         full: property.address,
         city: property.address.split(',').at(-2)?.trim() ?? '',
-        country: 'GB',
+        country: 'United Kingdom',
         zipcode: property.postcode,
       },
       propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? 'House',
