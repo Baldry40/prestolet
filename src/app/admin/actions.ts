@@ -8,12 +8,12 @@ import { redirect } from 'next/navigation'
 import { createProperty } from '@/lib/guesty'
 
 const GUESTY_PROPERTY_TYPE: Record<string, string> = {
-  House: 'house',
-  Flat: 'apartment',
-  Cottage: 'cottage',
-  Lodge: 'cabin',
-  'Glamping Pod': 'campsite',
-  Other: 'guesthouse',
+  House: 'House',
+  Flat: 'Apartment',
+  Cottage: 'Cottage',
+  Lodge: 'Cabin',
+  'Glamping Pod': 'Tent',
+  Other: 'Guesthouse',
 }
 
 async function requireAdmin() {
@@ -31,6 +31,7 @@ export async function approveProperty(propertyId: string) {
 
   try {
     const guesty = await createProperty({
+      type: 'SINGLE',
       nickname: property.name,
       title: property.name,
       address: {
@@ -39,12 +40,13 @@ export async function approveProperty(propertyId: string) {
         country: 'GB',
         zipcode: property.postcode,
       },
-      propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? property.type.toLowerCase(),
+      propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? 'House',
       bedrooms: property.bedrooms,
       bathrooms: property.bathrooms,
       prices: { basePrice: Number(property.expectedRate) },
       pictures: ((property.photos as string[]) ?? []).map((url) => ({ original: url })),
       publicDescription: { summary: property.description ?? '' },
+      terms: { minNights: 1, maxNights: 90 },
     })
     await db.property.update({
       where: { id: property.id },

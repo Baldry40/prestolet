@@ -21,6 +21,7 @@ export async function GET() {
     const token = await getToken()
 
     const payload = {
+      type: 'SINGLE',
       nickname: 'Test Property',
       title: 'Test Property',
       address: {
@@ -29,12 +30,13 @@ export async function GET() {
         country: 'GB',
         zipcode: 'SW1A 1AA',
       },
-      propertyType: 'apartment',
+      propertyType: 'Apartment',
       bedrooms: 1,
       bathrooms: 1,
       prices: { basePrice: 100 },
       pictures: [],
       publicDescription: { summary: 'Test' },
+      terms: { minNights: 1, maxNights: 90 },
     }
 
     const res = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {

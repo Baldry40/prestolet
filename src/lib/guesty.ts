@@ -46,6 +46,7 @@ async function guestyFetch(path: string, options: RequestInit = {}) {
 }
 
 export type GuestyPropertyPayload = {
+  type: 'SINGLE' | 'MTL'
   nickname: string
   title: string
   address: {
@@ -54,12 +55,13 @@ export type GuestyPropertyPayload = {
     country: string
     zipcode: string
   }
-  propertyType: string
+  propertyType?: string
   bedrooms: number
   bathrooms: number
   prices: { basePrice: number }
   pictures: { original: string }[]
   publicDescription: { summary: string }
+  terms: { minNights: number; maxNights: number }
 }
 
 export async function createProperty(payload: GuestyPropertyPayload) {
