@@ -21,22 +21,49 @@ async function getToken() {
   return tokenCache.token
 }
 
-async function guestyGet(token: string, path: string) {
-  const res = await fetch(`${process.env.GUESTY_BASE_URL}${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const body = await res.text()
-  return { ok: res.ok, status: res.status, body: JSON.parse(body) }
-}
-
 export async function GET() {
   try {
     const token = await getToken()
-    const [account, users] = await Promise.all([
-      guestyGet(token, '/accounts/me'),
-      guestyGet(token, '/users?limit=3'),
-    ])
-    return NextResponse.json({ account, users })
+
+    // Step 1: create a test listing
+    const payload = {
+      type: 'SINGLE',
+      nickname: 'Prestolet API Test (auto-delete)',
+      title: 'Prestolet API Test (auto-delete)',
+      address: { full: '1 Test Street, London' },
+      prices: { basePrice: 100 },
+      pictures: [],
+      terms: { minNights: 1, maxNights: 90 },
+    }
+
+    const createRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    const createBody = await createRes.json()
+
+    if (!createRes.ok) {
+      return NextResponse.json({ step: 'create', ok: false, status: createRes.status, body: createBody })
+    }
+
+    const listingId = createBody._id
+
+    // Step 2: immediately delete it
+    const deleteRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings/${listingId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    const deleteBody = await deleteRes.text()
+
+    return NextResponse.json({
+      step: 'done',
+      createOk: true,
+      listingId,
+      deleteOk: deleteRes.ok,
+      deleteStatus: deleteRes.status,
+      deleteBody,
+    })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) })
   }
