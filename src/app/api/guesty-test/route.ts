@@ -21,43 +21,45 @@ async function getToken() {
   return tokenCache.token
 }
 
+async function guestyJson(url: string, init?: RequestInit) {
+  const res = await fetch(url, init)
+  const text = await res.text()
+  let body: unknown
+  try { body = JSON.parse(text) } catch { body = text }
+  return { ok: res.ok, status: res.status, body }
+}
+
 export async function GET() {
   try {
     const token = await getToken()
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    const base = process.env.GUESTY_BASE_URL
 
-    // Step 1: try minimal payload first
-    const payload = { nickname: 'Prestolet API Test (auto-delete)' }
+    // 1. Read listings (confirms read access)
+    const listRes = await guestyJson(`${base}/listings?limit=1`, { headers })
 
-    const createRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
+    // 2. Try create with full payload
+    const payload = {
+      nickname: 'Prestolet API Test (auto-delete)',
+      type: 'SINGLE',
+      address: { full: '1 Test Street, London, UK' },
+    }
+    const createRes = await guestyJson(`${base}/listings`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     })
-    const rawText = await createRes.text()
-    let createBody: unknown
-    try { createBody = JSON.parse(rawText) } catch { createBody = rawText }
 
     if (!createRes.ok) {
-      return NextResponse.json({ step: 'create', ok: false, status: createRes.status, body: createBody, sentPayload: payload })
+      return NextResponse.json({ listRead: listRes, createFailed: { status: createRes.status, body: createRes.body, sentPayload: payload } })
     }
 
-    const listingId = createBody._id
+    const listingId = (createRes.body as { _id: string })._id
 
-    // Step 2: immediately delete it
-    const deleteRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings/${listingId}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    const deleteBody = await deleteRes.text()
+    // 3. Delete immediately
+    const deleteRes = await guestyJson(`${base}/listings/${listingId}`, { method: 'DELETE', headers })
 
-    return NextResponse.json({
-      step: 'done',
-      createOk: true,
-      listingId,
-      deleteOk: deleteRes.ok,
-      deleteStatus: deleteRes.status,
-      deleteBody,
-    })
+    return NextResponse.json({ listRead: listRes, createOk: true, listingId, deleteOk: deleteRes.ok, deleteStatus: deleteRes.status })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) })
   }
