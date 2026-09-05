@@ -25,26 +25,20 @@ export async function GET() {
   try {
     const token = await getToken()
 
-    // Step 1: create a test listing
-    const payload = {
-      type: 'SINGLE',
-      nickname: 'Prestolet API Test (auto-delete)',
-      title: 'Prestolet API Test (auto-delete)',
-      address: { full: '1 Test Street, London' },
-      prices: { basePrice: 100 },
-      pictures: [],
-      terms: { minNights: 1, maxNights: 90 },
-    }
+    // Step 1: try minimal payload first
+    const payload = { nickname: 'Prestolet API Test (auto-delete)' }
 
     const createRes = await fetch(`${process.env.GUESTY_BASE_URL}/listings`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
-    const createBody = await createRes.json()
+    const rawText = await createRes.text()
+    let createBody: unknown
+    try { createBody = JSON.parse(rawText) } catch { createBody = rawText }
 
     if (!createRes.ok) {
-      return NextResponse.json({ step: 'create', ok: false, status: createRes.status, body: createBody })
+      return NextResponse.json({ step: 'create', ok: false, status: createRes.status, body: createBody, sentPayload: payload })
     }
 
     const listingId = createBody._id
