@@ -42,8 +42,6 @@ export async function GET() {
     const payload = {
       nickname: 'Prestolet API Test (auto-delete)',
       title: 'Prestolet API Test (auto-delete)',
-      type: 'SINGLE',
-      address: { full: '1 Test Street, London, UK' },
     }
     const createRes = await guestyJson(`${base}/listings`, {
       method: 'POST',
