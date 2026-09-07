@@ -41,6 +41,7 @@ export async function GET() {
     // 2. Try create with full payload
     const payload = {
       nickname: 'Prestolet API Test (auto-delete)',
+      title: 'Prestolet API Test (auto-delete)',
       type: 'SINGLE',
       address: { full: '1 Test Street, London, UK' },
     }
