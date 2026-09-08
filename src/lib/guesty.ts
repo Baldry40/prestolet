@@ -56,8 +56,6 @@ export type GuestyPropertyPayload = {
     zipcode: string
   }
   propertyType?: string
-  bedrooms: number
-  bathrooms: number
   prices: { basePrice: number }
   pictures: { original: string }[]
   publicDescription: { summary: string }
