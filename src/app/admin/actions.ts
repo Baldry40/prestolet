@@ -37,8 +37,6 @@ export async function approveProperty(propertyId: string) {
       zipcode: property.postcode,
     },
     propertyType: GUESTY_PROPERTY_TYPE[property.type] ?? 'House',
-    bedrooms: property.bedrooms,
-    bathrooms: property.bathrooms,
     prices: { basePrice: Number(property.expectedRate) },
     pictures: ((property.photos as string[]) ?? []).map((url) => ({ original: url })),
     publicDescription: { summary: property.description ?? '' },
