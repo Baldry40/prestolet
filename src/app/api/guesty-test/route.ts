@@ -40,13 +40,14 @@ export async function GET() {
 
     // 2. Try create with full payload
     const payload = {
-      nickname: 'Prestolet API Test (auto-delete)',
-      title: 'Prestolet API Test (auto-delete)',
+      nickname: 'Test_Prestolet API Test',
+      title: 'Test_Prestolet API Test',
       type: 'SINGLE',
       address: { full: '1 Test Street, London, UK' },
       prices: { basePrice: 100 },
       terms: { minNights: 1, maxNights: 45 },
       pictures: [],
+      isTest: true,
     }
     const createRes = await guestyJson(`${base}/listings`, {
       method: 'POST',
