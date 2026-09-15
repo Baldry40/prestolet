@@ -47,7 +47,6 @@ export async function GET() {
       prices: { basePrice: 100 },
       terms: { minNights: 1, maxNights: 45 },
       pictures: [],
-      isTest: true,
     }
     const createRes = await guestyJson(`${base}/listings`, {
       method: 'POST',
