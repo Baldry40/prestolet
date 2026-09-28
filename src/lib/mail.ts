@@ -23,7 +23,7 @@ export async function sendNewPropertyAlert(property: {
 
   await transporter.sendMail({
     from: `Prestolet <${process.env.GMAIL_USER}>`,
-    to: process.env.GMAIL_USER,
+    to: process.env.ADMIN_EMAIL ?? process.env.GMAIL_USER,
     subject: `New property submission: ${property.name}`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
