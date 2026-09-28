@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/lib/db'
-import { getPropertyInsights, getMockInsights, getMockBookings, type MockBooking } from '@/lib/guesty'
+import { getPropertyInsights, getMockInsights, getReservations, getMockBookings, type Booking } from '@/lib/guesty'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import BookingCalendar from '@/components/BookingCalendar'
@@ -44,8 +44,10 @@ export default async function DashboardPage() {
       const stats = showData
         ? await getInsights(p.id, p.guestyId, Number(p.expectedRate))
         : null
-      const bookings: MockBooking[] = showData
-        ? getMockBookings(p.id, now.getFullYear(), now.getMonth())
+      const bookings: Booking[] = showData
+        ? (p.guestyId
+            ? await getReservations(p.guestyId).catch(() => getMockBookings(p.id, now.getFullYear(), now.getMonth()))
+            : getMockBookings(p.id, now.getFullYear(), now.getMonth()))
         : []
       return { property: p, stats, bookings }
     })

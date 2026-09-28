@@ -101,12 +101,56 @@ export function getMockInsights(propertyId: string, expectedRate: number) {
   }
 }
 
-export type MockBooking = {
+export type Booking = {
   checkIn: Date
   checkOut: Date
   guestName: string
   platform: string
   nights: number
+}
+
+/** @deprecated alias kept for components not yet migrated */
+export type MockBooking = Booking
+
+function normalizePlatform(source: string): string {
+  const s = (source ?? '').toLowerCase()
+  if (s.includes('airbnb')) return 'Airbnb'
+  if (s.includes('booking')) return 'Booking.com'
+  if (s.includes('vrbo') || s.includes('homeaway')) return 'Vrbo'
+  return 'Direct'
+}
+
+export async function getReservations(guestyId: string): Promise<Booking[]> {
+  const from = new Date()
+  from.setMonth(from.getMonth() - 1)
+  const to = new Date()
+  to.setMonth(to.getMonth() + 6)
+
+  const params = new URLSearchParams({
+    listingId: guestyId,
+    limit: '100',
+    'checkIn[$gte]': from.toISOString().split('T')[0],
+  })
+
+  const data = await guestyFetch(`/reservations?${params}`) as {
+    results: {
+      checkIn: string
+      checkOut: string
+      nightsCount: number
+      guest?: { fullName?: string }
+      source?: string
+    }[]
+  }
+
+  return (data.results ?? [])
+    .filter((r) => new Date(r.checkOut) <= to)
+    .map((r) => ({
+      checkIn: new Date(r.checkIn),
+      checkOut: new Date(r.checkOut),
+      guestName: r.guest?.fullName ?? 'Guest',
+      platform: normalizePlatform(r.source ?? ''),
+      nights: r.nightsCount,
+    }))
 }
 
 export function getMockBookings(propertyId: string, year: number, month: number): MockBooking[] {

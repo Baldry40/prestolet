@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import type { MockBooking } from '@/lib/guesty'
+import type { Booking } from '@/lib/guesty'
 
 const DAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
 type Props = {
-  bookings: MockBooking[]
+  bookings: Booking[]
   isMock?: boolean
 }
 
