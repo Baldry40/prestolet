@@ -8,6 +8,26 @@ const transporter = nodemailer.createTransport({
   },
 })
 
+export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return
+
+  await transporter.sendMail({
+    from: `Prestolet <${process.env.GMAIL_USER}>`,
+    to,
+    subject: 'Reset your Prestolet password',
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #226840;">Reset your password</h2>
+        <p>We received a request to reset your password. Click the button below — the link expires in 1 hour.</p>
+        <a href="${resetUrl}" style="display: inline-block; background: #226840; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin: 16px 0;">
+          Reset password →
+        </a>
+        <p style="color: #999; font-size: 13px;">If you didn't request this, you can ignore this email. Your password won't change.</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendNewPropertyAlert(property: {
   name: string
   address: string

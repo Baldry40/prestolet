@@ -62,8 +62,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-cream-300 text-sm text-stone-400 text-center">
-          &copy; 2025 Prestolet Ltd. All rights reserved.
+        <div className="mt-12 pt-6 border-t border-cream-300 text-sm text-stone-400 text-center flex flex-col sm:flex-row items-center justify-center gap-4">
+          <span>&copy; 2025 Prestolet Ltd. All rights reserved.</span>
+          <span className="hidden sm:inline text-stone-300">·</span>
+          <Link href="/terms" className="hover:text-stone-600 transition">Terms of Service</Link>
+          <span className="hidden sm:inline text-stone-300">·</span>
+          <Link href="/privacy" className="hover:text-stone-600 transition">Privacy Policy</Link>
         </div>
       </div>
     </footer>
