@@ -26,7 +26,7 @@ export function buildCleanerNotification({
 }) {
   return (
     `Hi ${cleanerName}, a cleaning job is available at ${propertyName}.\n` +
-    `Guest checks out: ${checkoutDate}.\n` +
+    `Guest check-in: ${bookingDate}. Checkout: ${checkoutDate}.\n` +
     `Reply YES to confirm or NO to decline.\n` +
     `- Prestolet`
   )
