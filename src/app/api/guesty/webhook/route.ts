@@ -5,12 +5,16 @@ import { sendSms, buildCleanerNotification } from '@/lib/sms'
 type GuestyReservationEvent = {
   event: string
   data: {
-    _id: string
-    listingId: string
+    // v2 fields
+    reservationId?: string
+    unitId?: string
+    // legacy fields
+    _id?: string
+    listingId?: string
+    // shared
     checkIn: string
     checkOut: string
     status: string
-    guest?: { fullName?: string }
   }
 }
 
@@ -30,11 +34,19 @@ export async function POST(req: NextRequest) {
 
   const payload = await req.json() as GuestyReservationEvent
 
-  if (payload.event !== 'reservation.created' || payload.data?.status !== 'confirmed') {
+  const isReservationEvent = [
+    'reservation.created.v2',
+    'reservation.new',
+    'reservation.created',
+  ].includes(payload.event)
+
+  if (!isReservationEvent || payload.data?.status !== 'confirmed') {
     return new NextResponse('', { status: 200 })
   }
 
-  const { _id: bookingRef, listingId, checkIn, checkOut } = payload.data
+  const bookingRef = payload.data.reservationId ?? payload.data._id ?? 'unknown'
+  const listingId = payload.data.unitId ?? payload.data.listingId
+  const { checkIn, checkOut } = payload.data
 
   if (!listingId || !checkOut) {
     return new NextResponse('', { status: 200 })
